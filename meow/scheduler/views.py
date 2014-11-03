@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.contrib.auth.models import User, Group
+import tweepy
 import sys
 
 
@@ -344,12 +345,20 @@ Thanks,
     
     send_posts = MeowSetting.objects.get(setting_key='send_posts').setting_value
     site_message = MeowSetting.objects.get(setting_key='site_message').setting_value
+    sections = Section.objects.all()
+    TWITTER_CONSUMER_KEY = MeowSetting.objects.get(setting_key='twitter_consumer_key').setting_value
+    TWITTER_CONSUMER_SECRET = MeowSetting.objects.get(setting_key='twitter_consumer_secret').setting_value
+    twitter_auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+    twitter_auth.secure = True
+    twitter_auth_url = twitter_auth.get_authorization_url()
     context = {
         "user" : request.user,
         "message" : message,
         "old_fields" : old_fields,
         "send_posts" : send_posts,
         "site_settings" : get_settings(),
+        "sections": sections,
+        "twitter_auth_url": twitter_auth_url,
     }
     return render(request, 'scheduler/manage.html', context)
     

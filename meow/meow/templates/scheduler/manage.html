@@ -120,6 +120,50 @@
                 </form>
             </div>
         </section>
+        <section>
+            <p class="title" data-section-title><a href="#panel3">Add/edit sections</a></p>
+            <div class="content" data-section-content>
+                <h3>Add/edit sections</h3>
+                <form id="sections-form" methd="post" data-abide>
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="edit-section" />
+                    {% for section in sections %}
+                        <hr />
+                        <div class="row">
+                            <div class="large-4 columns">
+                                <label for="{{ section.id }}-name">Name</label>
+                                <input name="{{ section.id }}-name" id="{{ section.id }}-name" type="text" value="{{ section.name }}" />
+                            </div>
+                            <div class="large-8 columns">
+                                <!-- Also post to -->
+                                <label for="{{ section.id }}-also-post-to">Also post to</label>
+                                <select name="{{ section.id }}-also-post-to" id="{{ section.id }}-also-post-to">
+                                    <option value="">None</option>
+                                    {% for aptSection in sections %}
+                                    {% if not section.id == aptSection.id %}
+                                    <option value="{{ aptSection.id}}"
+                                        {% if section.also_post_to.id == aptSection.id %} selected {% endif %}
+                                    >{{ aptSection.name }}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <!-- SM connect -->
+                                <div class="row row-fluid">
+                                    <div class="large-6 colunmns">
+                                    <h5>Twitter</h5>
+                                    {% if section.twitter_access_key and section.twitter_access_secret %}
+                                        <p>Connected to <a href="http://twitter.com/{{ section.twitter_account_handle}}/" target="_blank"><strong>@{{ section.twitter_account_handle }}</strong></a></p>
+                                    {% else %}
+                                        <p>No account connected.</p>
+                                    {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /row -->
+                    {% endfor %}
+                </form>
+            </div>
+        </section>
     </div>
 </div></div>
 
